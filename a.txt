@@ -1,0 +1,142 @@
+要在Ubuntu上翻墙上外网，可以使用多种方法。以下是一些常见且有效的方法：
+
+1. 使用VPN
+
+VPN（Virtual Private Network，虚拟专用网络）是最常用的翻墙方法之一。它通过加密你的网络连接，隐藏你的真实IP地址，从而访问被限制的网站。
+
+安装VPN客户端
+
+	1.	选择VPN服务提供商：选择一个可靠的VPN服务提供商，比如NordVPN、ExpressVPN、Surfshark等。
+	2.	下载VPN客户端：大多数VPN提供商都提供Linux版本的客户端。可以在其官方网站下载。
+	3.	安装VPN客户端：
+	•	如果提供了Debian包（.deb），可以使用以下命令安装：
+
+sudo dpkg -i /path/to/package.deb
+sudo apt-get install -f
+
+	3.	
+	•	如果是通过PPA（个人软件包档案）安装，比如NordVPN，可以使用以下命令：
+
+sudo apt-get update
+sudo apt-get install -y nordvpn
+
+
+
+使用VPN
+
+	1.	登录VPN账号：
+
+nordvpn login
+
+
+	2.	连接到VPN服务器：
+
+nordvpn connect
+
+
+	3.	断开VPN：
+
+nordvpn disconnect
+
+
+
+2. 使用Shadowsocks
+
+Shadowsocks是一种基于Socks5代理的开源翻墙工具，常用于绕过互联网审查。
+
+安装Shadowsocks客户端
+
+	1.	安装依赖：
+
+sudo apt-get update
+sudo apt-get install python3-pip
+
+
+	2.	安装Shadowsocks：
+
+sudo pip3 install shadowsocks
+
+
+
+配置Shadowsocks
+
+	1.	创建配置文件：
+在/etc/shadowsocks/config.json中创建配置文件：
+
+{
+    "server": "your_server_ip",
+    "server_port": your_server_port,
+    "local_address": "127.0.0.1",
+    "local_port": 1080,
+    "password": "your_password",
+    "timeout": 300,
+    "method": "aes-256-cfb"
+}
+
+
+	2.	启动Shadowsocks客户端：
+
+sslocal -c /etc/shadowsocks/config.json
+
+
+
+配置系统代理
+
+	1.	安装proxychains：
+
+sudo apt-get install proxychains
+
+
+	2.	编辑proxychains配置文件：
+在/etc/proxychains.conf中，添加以下内容：
+
+socks5 127.0.0.1 1080
+
+
+	3.	通过proxychains运行程序：
+
+proxychains firefox
+
+
+
+3. 使用Tor
+
+Tor是一种用于匿名通信的自由软件，它通过一系列虚拟隧道来保护用户隐私和安全。
+
+安装Tor
+
+	1.	添加Tor项目的GPG密钥和仓库：
+
+sudo apt install apt-transport-https
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 74A941BA219EC810
+echo "deb https://deb.torproject.org/torproject.org $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/tor.list
+
+
+	2.	更新软件包列表并安装Tor：
+
+sudo apt update
+sudo apt install tor deb.torproject.org-keyring
+
+
+
+启动Tor服务
+
+sudo systemctl start tor
+
+配置系统代理
+
+与Shadowsocks类似，可以使用proxychains来配置Tor代理：
+
+	1.	编辑proxychains配置文件：
+在/etc/proxychains.conf中，添加以下内容：
+
+socks5 127.0.0.1 9050
+
+
+	2.	通过proxychains运行程序：
+
+proxychains firefox
+
+
+
+这些方法各有优缺点，选择适合你需求的方法即可。使用VPN通常是最简单和高效的方法，而Shadowsocks和Tor在需要更高匿名性或应对特定网络限制时会更合适。
